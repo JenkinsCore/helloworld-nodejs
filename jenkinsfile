@@ -1,10 +1,19 @@
 pipeline {
-    agent any
-    stages {
-        stage('Say Hello')
-        steps {
-            echo 'Hello World in Kubernets!'
-            java -v
+  agent none
+  options { 
+    buildDiscarder(logRotator(numToKeepStr: '2'))
+    skipDefaultCheckout true
+  }
+  stages {
+    stage('Test') {
+      agent { label 'nodejs-app' }
+      steps {
+        checkout scm
+        container('nodejs') {
+          echo 'Hello World Kuberentes!'   
+          sh 'node --version'
         }
+      }
     }
+  }
 }
